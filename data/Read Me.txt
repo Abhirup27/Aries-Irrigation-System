@@ -1,0 +1,2 @@
+This folder is for storing Routine data files(maybe in JSON), storing RPi GPIO value during the check routines and other files require for storing other than pictures.
+These files will be loaded to classes like routine class and then passed to the appropriate functions. 
