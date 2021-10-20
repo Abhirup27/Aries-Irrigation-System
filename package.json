@@ -1,6 +1,6 @@
 {
   "name": "aries-irrigation-system",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "RPi plant watering interface and system",
   "main": "server.js",
   "scripts": {
