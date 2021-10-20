@@ -1,4 +1,9 @@
 const Http = new XMLHttpRequest();
+var dataFile ='data/jobTypes.JSON'
+Http.open("GET", dataFile, true);
+Http.setRequestHeader('Content-Type', 'text/plain');
+var jobTypes;
+
 var j=0;
 var varB = document.getElementById('ADD');
 var row =[] //document.createElement('tr');
@@ -8,12 +13,13 @@ var coll =document.createElement('td')
  document.getElementsByTagName("table")[0].setAttribute("id","tb");
 const table= document.getElementById("tb");
 varB.onclick = function(){
-    var dataFile = 'data/jobTypes.JSON'
-    Http.open("GET", dataFile, true);
-    Http.send();
+  Http.send();
     Http.onreadystatechange = function() {
+      
         if (this.readyState == 4 && this.status == 200) {
           //document.getElementById("demo").innerHTML = this.responseText;     // This will be inside  the select loop  
+          console.log(this.responseText)
+          jobTypes= this.responseText;
         }
       };
     row.push(document.createElement('tr'));
@@ -22,6 +28,8 @@ varB.onclick = function(){
         newRow.appendChild(document.createElement('td')).id='rc`${row.length}``${i}`';
         var cell =  newRow.children[i];
         // MAKE IF CONDITONS FOR DIFFERENT ROWS IN THE TABLE FOR MAKING DIFFERENT INPUT FEILDS!
+
+
         cell.appendChild(document.createElement('select')).setAttribute("type","select"); 
         var select = cell.getElementsByTagName('select')[0];
         select.appendChild(document.createElement('option')).value = "Water Plant" 
