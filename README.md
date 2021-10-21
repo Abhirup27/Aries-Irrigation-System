@@ -10,7 +10,7 @@ Plant watering interface/system developed in Node.js for Raspberry Pi Zero with 
  <br>
 <a href="https://github.com/Abhirup27/Aries-Irrigation-System/blob/main/LICENSE" style="max-width: 100%;margin: 10px;"><img alt="GitHub license" src="https://img.shields.io/github/license/Abhirup27/Aries-Irrigation-System?style=for-the-badge"></a>
 <h2>Dependencies</h2>
-<ul>
+<ul style="list-style: inside;">
   <li>NodeJS</li>
   <li>Express</li>
   <li>rpi-gpio</li>
