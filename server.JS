@@ -1,5 +1,4 @@
 const express = require('express');
-const JSONparse = require('./scripts/parseJSON.JS')
 const fs =require('fs');
 const app = express();
 var PORT=3000;
