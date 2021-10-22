@@ -3,6 +3,7 @@ const fs =require('fs');
 const app = express();
 var PORT=3000;
 
+
 //--REQUESTS FROM INDEX.HTML--//
 
 app.get('/', function(req,res){
@@ -19,7 +20,10 @@ app.post('/routine',function(req,res){
 })
 
 //---END---//
-
+app.post('/routineSUBMIT',function(req,res){
+    console.log(req.body);
+    
+})
 app.get('/routine/routinePage.JS',function(req,res){
     res.sendFile(__dirname +"/scripts/client/routinePage.JS");
 })
@@ -44,3 +48,47 @@ app.get('/data/jobTypes.JSON', function(req,res){
     //res.sendFile(__dirname + '/data/jobTypes.JSON')
 
 })
+app.get('/date', function(req,res){
+    let date = new Date();
+        const data =date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate(); 
+        res.send(data);  
+            
+    
+     })
+// app.get('/time', function(req,res){
+//         const data =date.getHours()+':'+date.getMinutes();
+//         res.format({  
+//             'text/plain': function(){  
+//               res.send(data);  
+//             }
+//     }
+//      )})
+
+app.get('/time', function(req,res){
+    let date = new Date();
+        const data =[date.getHours() , date.getMinutes() , date.getSeconds()];
+    
+              res.send(data);  
+        
+
+     })
+
+
+// app.get('/hour', function(req,res){
+//     let date = new Date();
+//         const data =date.getHours();
+//         res.send(String(data));  
+//         })
+
+//      app.get('/minute', function(req,res){
+//         let date = new Date();
+//         const data =date.getMinutes();
+//          res.send(String(data));  
+//         })
+
+//      app.get('/second', function(req,res){
+//         let date = new Date();
+//         const data =date.getSeconds();
+//         console.log(data);
+//         res.send(String(data));  
+  //   })
