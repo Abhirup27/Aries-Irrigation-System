@@ -1,3 +1,25 @@
+
+var job = {
+  jobType: "water",
+occur: "once",
+time : "",
+date : "",
+}
+function change(JOBTYPE, OCCUR, TIMES,DATES){
+  this.jobType = JOBTYPE;
+  this.occur= OCCUR;
+  this.time= TIMES;
+  this.date = DATES;
+
+}
+var x = Array(
+  {
+    'jobType': 'Empty',
+    'occur' :'Empty',
+    'time' : 'Empty',
+    'date' : 'Empty'
+  }
+);
 var dataFile ='data/jobTypes.JSON'
 // Http.open("GET", dataFile, true);
 // Http.send();
@@ -25,6 +47,7 @@ var cells= []
 var inputs = []
 var coll =document.createElement('td')
   //.id = "tb" //.setAttribute("id","table"); 
+  
  document.getElementsByTagName("body")[0].appendChild(document.createElement("table"))
  document.getElementsByTagName("table")[0].setAttribute("id","tb");
 const table= document.getElementById("tb");
@@ -34,7 +57,7 @@ ButtonAdd.onclick = function(){
   ButtonSubmit.removeAttribute("disabled");
 
     row.push(document.createElement('tr'));
-    const newRow = table.appendChild(row[j]);
+    const newRow = table.appendChild(row[j])
       for(var i =0;i<4;i++){
         newRow.appendChild(document.createElement('td')).id= `rc${row.length}${i}`;
         var cell =  newRow.children[i];
@@ -79,16 +102,16 @@ ButtonAdd.onclick = function(){
           default:
             break;
         }
+        cell.firstElementChild.setAttribute("name","test")
         addListener(cell.firstElementChild);
+        
         inputs.push(cell.firstElementChild);
-    
 
         //cell.appendChild(document.createElement('select')).setAttribute("type","select"); 
         // ANOTHER LOOP TO ENTER OPTIONS IN SELECT
         
         // ------
         }
-
     
     // newRow.appendChild(document.createElement('td')).id='1';
     // newRow.appendChild(document.createElement('td')).id='2';
@@ -109,14 +132,27 @@ function addListener(element){
 }
 
   ButtonSubmit.onclick = function() {
-
+    var ele=0;
+    var inp=0;
+    while(inp<inputs.length){
+    x[ele]= (Object(  
+      {  
+    'jobType': inputs[inp].value,
+    'occur' : inputs[++inp].value,
+    'time' : inputs[++inp].value,
+    'date' : inputs[++inp].value }
+    ));
+    inp++;
+        ele++;
+      }
+    sendForm("/routine/ADD");
+  //sendData('routineSUBMIT', function(response){ console.log(response)})
   ButtonSubmit.toggleAttribute("disabled");
 }
 
 function changeState()
 {
   var element = this;
-
 //Detecting values of input element passed to this callback function as 'this'
 if(this.value=="Daily"){
   //console.log("Daily")
@@ -171,5 +207,60 @@ function getData(data, cb)
           }
         };
    
+
+}
+// function sendData(data, cb)
+// {
+ 
+//   const Http = new XMLHttpRequest();
+//   //Http.open("POST", data, true);
+
+//   fetch(data, {
+//     method : "POST",
+//     body: new FormData(document.getElementById("setRoutine")),
+//     // -- or --
+//     // body : JSON.stringify({
+//         // user : document.getElementById('user').value,
+//         // ...
+//     // })
+// }).then(
+//     response => response.text() // .json(), etc.
+//     // same as function(response) {return response.text();}
+// ).then(
+//     html => console.log(html)
+// );
+//   //Http.responseType = "text"
+
+//       // Http.onreadystatechange = function() {
+        
+//       //     if (this.readyState == 4 && this.status == 200) {
+//       //       //document.getElementById("demo").innerHTML = this.responseText;     // This will be inside  the select loop  
+//       //       //console.log(this.status);
+//       //       console.log(this.responseText)
+//       //       cb(this.responseText);
+  
+//       //     }
+//       //   };
+//         //Http.send();
+   
+
+// }
+
+function sendForm(theUrl)
+{
+  var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
+
+xmlhttp.open("POST", theUrl);
+xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+xmlhttp.onreadystatechange = function() {
+        
+          if (this.readyState == 4 && this.status == 200) {
+            //document.getElementById("demo").innerHTML = this.responseText;     // This will be inside  the select loop  
+            //console.log(this.status);
+            console.log(this.responseText);
+          }
+        }
+xmlhttp.send(JSON.stringify(x));
+
 
 }

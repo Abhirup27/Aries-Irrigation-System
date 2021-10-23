@@ -26,8 +26,14 @@
   },
   "homepage": "https://github.com/Abhirup27/Aries-Irrigation-System#readme",
   "dependencies": {
+    "body-parser": "^1.19.0",
+    "connect": "^3.7.0",
     "express": "^4.17.1",
     "pi-camera": "^1.6.0",
     "socket.io": "^4.3.1"
+  },
+  "nodemonConfig": {
+      "ignore": ["./data/"]
   }
+  
 }

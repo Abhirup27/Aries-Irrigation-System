@@ -1,9 +1,10 @@
 const express = require('express');
+const bodyParser = require('body-parser')
 const fs =require('fs');
 const app = express();
 var PORT=3000;
 
-
+    app.use(express.json())
 //--REQUESTS FROM INDEX.HTML--//
 
 app.get('/', function(req,res){
@@ -20,8 +21,18 @@ app.post('/routine',function(req,res){
 })
 
 //---END---//
-app.post('/routineSUBMIT',function(req,res){
-    console.log(req.body);
+app.post('/routine/ADD',function(req,res){
+    express.json()
+    //console.log(req.body);
+    fs.appendFile(__dirname +'/data/jobSchedule.JSON',JSON.stringify(req.body), (err) => {
+        if (err) {
+          console.log(err);
+        }
+        else {
+          // Get the file contents after the append operation
+          res.send("received and stored");
+        }
+      });
     
 })
 app.get('/routine/routinePage.JS',function(req,res){
