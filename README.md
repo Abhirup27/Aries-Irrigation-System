@@ -1,7 +1,7 @@
 <div align="center">
  <h1>Aries-Irrigation-System</h1>
  <img src="https://user-images.githubusercontent.com/55529237/138548986-d804a1ee-8315-4212-80a7-cd77517caa5d.png" align="center" width="10%" style="max-width: 100%;margin-left: 100px;"></img>
-<h3><b>Plant watering interface/system developed in Node.js for Raspberry Pi Zero with web interface.</b></h3>
+<h3><b>Automatic plant watering interface and system developed in Node.js for Raspberry Pi Zero with web interface.</b></h3>
 <br>
  <img src="https://user-images.githubusercontent.com/55529237/138312725-f9512b71-ddfb-4771-82de-d3dcaaf6f403.png" width="8%" ></img> 
  <img src="https://user-images.githubusercontent.com/55529237/138305353-178f1c71-1715-40e5-b720-50a863bacccc.png" width="8%" ></img>
