@@ -59,6 +59,23 @@ app.get('/data/jobTypes.JSON', function(req,res){
     //res.sendFile(__dirname + '/data/jobTypes.JSON')
 
 })
+app.get('/data/jobSchedule.JSON', function(req,res){
+    //console.log(req.url)
+//console.log(JSONparse(__dirname + req.url))
+    fs.readFile(__dirname + req.url, 'utf-8', (err, Rdata)=>
+    {
+        if(err){
+            throw err;
+        }
+
+        //console.log(Object.values(JSON.parse(Rdata)))
+        //const data = Object.values(JSON.parse(Rdata))//JSON.parse(Rdata.toString());
+        res.send(Rdata);
+    }
+     )
+    //res.sendFile(__dirname + '/data/jobTypes.JSON')
+
+})
 app.get('/date', function(req,res){
     let date = new Date();
         const data =date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate(); 

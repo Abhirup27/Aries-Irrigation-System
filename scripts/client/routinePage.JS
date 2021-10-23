@@ -12,14 +12,7 @@ function change(JOBTYPE, OCCUR, TIMES,DATES){
   this.date = DATES;
 
 }
-var x = Array(
-  {
-    'jobType': 'Empty',
-    'occur' :'Empty',
-    'time' : 'Empty',
-    'date' : 'Empty'
-  }
-);
+var x = Array();
 var dataFile ='data/jobTypes.JSON'
 // Http.open("GET", dataFile, true);
 // Http.send();
@@ -38,6 +31,9 @@ getData("date",function(responseText){
 var time ;
 getData('time', function(responseText){console.log('working!!');time=( JSON.parse(responseText))})
 
+var recievedTable ;
+var ele=0;
+    var inp=0;
 var jobTypes = [];
 var j=0; // NUMBER OF ROWS
 var ButtonAdd = document.getElementById('ADD');
@@ -51,6 +47,28 @@ var coll =document.createElement('td')
  document.getElementsByTagName("body")[0].appendChild(document.createElement("table"))
  document.getElementsByTagName("table")[0].setAttribute("id","tb");
 const table= document.getElementById("tb");
+table.appendChild(document.createElement("tr"));
+var head = table.firstElementChild;
+
+head.appendChild(document.createElement('td')).innerHTML="Type";
+var cell1= head.children[0]
+cell1.setAttribute("style","text-align:center;width: 120px;")
+head.appendChild(document.createElement('td')).innerHTML="Occurance";
+var cell1= head.children[1]
+cell1.setAttribute("style","width: 50px;text-align:center;")
+head.appendChild(document.createElement('td')).innerHTML="Time";
+var cell1= head.children[2]
+cell1.setAttribute("style","width: 50px;text-align:center;")
+head.appendChild(document.createElement('td')).innerHTML="Date";
+var cell1= head.children[3]
+
+cell1.setAttribute("style","text-align:center;")
+//request Server for the schedule.JSON
+getData('data/jobSchedule.JSON', function(restext){
+recievedTable=JSON.parse(restext);
+console.log(recievedTable)
+})
+
 
 
 ButtonAdd.onclick = function(){
@@ -131,22 +149,33 @@ function addListener(element){
   element.addEventListener("change", changeState)
 }
 
-  ButtonSubmit.onclick = function() {
-    var ele=0;
-    var inp=0;
+  ButtonSubmit.onclick = function() {  // SUBMIT BUTTON
+  
+    var z=3;
+    var tempVal;
     while(inp<inputs.length){
+      z=3;
     x[ele]= (Object(  
       {  
     'jobType': inputs[inp].value,
     'occur' : inputs[++inp].value,
     'time' : inputs[++inp].value,
-    'date' : inputs[++inp].value }
-    ));
+    'date' : inputs[++inp].value }));
+    while(z>=0)
+    {
+
+    tempVal= inputs[inp-z].value
+    inputs[inp-z].parentElement.innerHTML= inputs[inp-z].value;
+    console.log(cells[inp-z].innerHTML)
+    --z;
+    }
     inp++;
         ele++;
       }
     sendForm("/routine/ADD");
   //sendData('routineSUBMIT', function(response){ console.log(response)})
+
+
   ButtonSubmit.toggleAttribute("disabled");
 }
 
@@ -201,7 +230,7 @@ function getData(data, cb)
           if (this.readyState == 4 && this.status == 200) {
             //document.getElementById("demo").innerHTML = this.responseText;     // This will be inside  the select loop  
             //console.log(this.status);
-            console.log(this.responseText)
+            //console.log(this.responseText)
             cb(this.responseText);
   
           }
