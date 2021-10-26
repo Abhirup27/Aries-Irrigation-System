@@ -12,16 +12,124 @@ function change(JOBTYPE, OCCUR, TIMES,DATES){
   this.date = DATES;
 
 }
-var x = Array();
+var x=[];
+getData('data/jobSchedule.JSON', function(restext){
+  x=JSON.parse(restext);
+  for(h=0; h<x.length; h++)
+{
+  console.log("running")
+  row.push(document.createElement('tr'));
+  const newRow = table.appendChild(row[h]);
+  for(var i =0;i<5;i++){
+    newRow.appendChild(document.createElement('td')).id= `rc${row.length}${i}`;
+    cell =  newRow.children[i];
+    cells.push(cell);
+    switch(i)
+        {
+          case 0:
+            cell.innerHTML=Object.values(x[h])[i]
+          
+            break;
+          case 1:
+            cell.innerHTML=Object.values(x[h])[i]
+          
+            break;
+          case 2:
+            cell.innerHTML=Object.values(x[h])[i]
+          
+            break;
+
+            case 3:
+            cell.innerHTML=Object.values(x[h])[i]
+            break;
+            case 4:
+              
+              cell.appendChild(document.createElement("input")).setAttribute("type", "button")
+              cell.firstElementChild.setAttribute('value','EDIT')
+              cell.firstElementChild.addEventListener('click', function(){
+                var l=0;
+                  console.log("running")
+                  while(l<4){
+                    switch(l){
+                      case 0:
+                        this.parentElement.parentElement.children[l].appendChild(new InsSelect());
+                        addListener(this.parentElement.parentElement.children[l].firstElementChild)
+                        break;
+                      case 1:
+                        this.parentElement.parentElement.children[l].appendChild(new InsSelect1())
+                        addListener(this.parentElement.parentElement.children[l].firstElementChild)
+                        break;
+                      case 2:
+                        this.parentElement.parentElement.children[l].appendChild(new InsTime());
+                        addListener(this.parentElement.parentElement.children[l].firstElementChild)
+                        break;
+                      case 3:
+                        this.parentElement.parentElement.children[l].appendChild(new InsDate());
+                        addListener(this.parentElement.parentElement.children[l].firstElementChild)
+                        break;
+                      default:
+                        break;
+                    }  
+                  l++
+                }
+                
+              })
+              break;
+          default:
+            break;
+        }
+  }
+
+
+
+  j++
+}
+
+  //console.log(x)
+  })
+  console.log(x)
 var dataFile ='data/jobTypes.JSON'
 // Http.open("GET", dataFile, true);
 // Http.send();
+
 getData(dataFile, function(responseText){
           jobTypes= JSON.parse(responseText)
           jobTypes = jobTypes[0]
           console.log("jobs entered")
-
 })
+function InsSelect(){
+  var ele= document.createElement("select");
+  for(var i=0; i<jobTypes.length; i++){
+    ele.appendChild(document.createElement('option')).setAttribute("value", jobTypes[i]);
+      var options = ele.children[i];
+      //options.value = jobTypes[0][z];
+      options.innerHTML = jobTypes[i]
+    }
+    return ele;
+}
+function InsSelect1()
+{
+  var ele= document.createElement("select");
+  ele.appendChild(document.createElement('option')).setAttribute("value", "Once");
+  ele.appendChild(document.createElement('option')).setAttribute("value", "Daily");
+  ele.children[0].innerHTML = "Once";
+  ele.children[1].innerHTML = "Daily";
+
+  return ele;
+}
+function InsTime()
+{
+  var time=  document.createElement('input')
+  time.setAttribute("type","time");
+  return time;
+}
+function InsDate()
+{
+  var date = document.createElement('input');
+  date.setAttribute("type","date");
+  return date;
+}
+
 var date;
 getData("date",function(responseText){
 
@@ -31,18 +139,20 @@ getData("date",function(responseText){
 var time ;
 getData('time', function(responseText){console.log('working!!');time=( JSON.parse(responseText))})
 
-var recievedTable ;
 var ele=0;
     var inp=0;
 var jobTypes = [];
 var j=0; // NUMBER OF ROWS
+var h;
 var ButtonAdd = document.getElementById('ADD');
 var ButtonSubmit =document.getElementById('SET');
 var row =[] 
+var cell;
 var cells= []
 var inputs = []
 var coll =document.createElement('td')
   //.id = "tb" //.setAttribute("id","table"); 
+
   
  document.getElementsByTagName("body")[0].appendChild(document.createElement("table"))
  document.getElementsByTagName("table")[0].setAttribute("id","tb");
@@ -61,14 +171,10 @@ var cell1= head.children[2]
 cell1.setAttribute("style","width: 50px;text-align:center;")
 head.appendChild(document.createElement('td')).innerHTML="Date";
 var cell1= head.children[3]
-
 cell1.setAttribute("style","text-align:center;")
-//request Server for the schedule.JSON
-getData('data/jobSchedule.JSON', function(restext){
-recievedTable=JSON.parse(restext);
-console.log(recievedTable)
-})
 
+
+//request Server for the schedule.JSON
 
 
 ButtonAdd.onclick = function(){
@@ -78,14 +184,14 @@ ButtonAdd.onclick = function(){
     const newRow = table.appendChild(row[j])
       for(var i =0;i<4;i++){
         newRow.appendChild(document.createElement('td')).id= `rc${row.length}${i}`;
-        var cell =  newRow.children[i];
+        cell =  newRow.children[i];
         cells.push(cell);
         // MAKE IF CONDITONS FOR DIFFERENT ROWS IN THE TABLE FOR MAKING DIFFERENT INPUT FEILDS!
         switch(i)
         {
           case 0:
             
-            cell.appendChild(document.createElement('select')).setAttribute("form","setRoutine");
+            cell.appendChild(document.createElement('select'));
             var select = cell.getElementsByTagName('select')[0];
             
             for(var z=0; z< Number(jobTypes.length); z++)
@@ -155,7 +261,7 @@ function addListener(element){
     var tempVal;
     while(inp<inputs.length){
       z=3;
-    x[ele]= (Object(  
+    x.push(Object(  
       {  
     'jobType': inputs[inp].value,
     'occur' : inputs[++inp].value,
@@ -293,3 +399,4 @@ xmlhttp.send(JSON.stringify(x));
 
 
 }
+

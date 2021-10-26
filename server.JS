@@ -24,7 +24,7 @@ app.post('/routine',function(req,res){
 app.post('/routine/ADD',function(req,res){
     express.json()
     //console.log(req.body);
-    fs.appendFile(__dirname +'/data/jobSchedule.JSON',JSON.stringify(req.body), (err) => {
+    fs.writeFile(__dirname +'/data/jobSchedule.JSON',JSON.stringify(req.body), (err) => {
         if (err) {
           console.log(err);
         }
