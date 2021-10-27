@@ -1,4 +1,3 @@
-
 var job = {
   jobType: "water",
 occur: "once",
@@ -28,51 +27,66 @@ getData('data/jobSchedule.JSON', function(restext){
         {
           case 0:
             cell.innerHTML=Object.values(x[h])[i]
-          
+         
             break;
           case 1:
             cell.innerHTML=Object.values(x[h])[i]
-          
+         
             break;
           case 2:
             cell.innerHTML=Object.values(x[h])[i]
-          
+         
             break;
 
             case 3:
             cell.innerHTML=Object.values(x[h])[i]
             break;
             case 4:
-              
+             
               cell.appendChild(document.createElement("input")).setAttribute("type", "button")
               cell.firstElementChild.setAttribute('value','EDIT')
+              cell.firstElementChild.id = h;
               cell.firstElementChild.addEventListener('click', function(){
+                ButtonSubmit.removeAttribute("disabled");
+                MODIFIED= true;
+                TASK_TYPE.push("MODIFY")
+                ROW_INDECIES.push( this.id);
+                console.log(this.id)
                 var l=0;
                   console.log("running")
                   while(l<4){
                     switch(l){
                       case 0:
+                        var Ovalue= this.parentElement.parentElement.children[l].innerHTML;//= this.parentElement.parentElement.children[l].innerHTML;
                         this.parentElement.parentElement.children[l].appendChild(new InsSelect());
                         addListener(this.parentElement.parentElement.children[l].firstElementChild)
                         break;
                       case 1:
+                        var Ovalue= this.parentElement.parentElement.children[l].innerHTML;
                         this.parentElement.parentElement.children[l].appendChild(new InsSelect1())
                         addListener(this.parentElement.parentElement.children[l].firstElementChild)
                         break;
                       case 2:
+                        var Ovalue= this.parentElement.parentElement.children[l].innerHTML;
                         this.parentElement.parentElement.children[l].appendChild(new InsTime());
                         addListener(this.parentElement.parentElement.children[l].firstElementChild)
                         break;
                       case 3:
+                        var Ovalue= this.parentElement.parentElement.children[l].innerHTML;
                         this.parentElement.parentElement.children[l].appendChild(new InsDate());
                         addListener(this.parentElement.parentElement.children[l].firstElementChild)
                         break;
                       default:
                         break;
-                    }  
+                    }
+                    this.parentElement.parentElement.children[l].firstElementChild.value= Ovalue;
+                    inputs.push(this.parentElement.parentElement.children[l].firstElementChild);
                   l++
                 }
-                
+               if(this.parentElement.parentElement.children[1].firstElementChild.value== "Daily")
+               {
+                this.parentElement.parentElement.children[3].firstElementChild.readOnly= true;
+               }
               })
               break;
           default:
@@ -142,18 +156,21 @@ getData('time', function(responseText){console.log('working!!');time=( JSON.pars
 var ele=0;
     var inp=0;
 var jobTypes = [];
+var TASK_TYPE = [];
 var j=0; // NUMBER OF ROWS
 var h;
+var MODIFIED = false;
+var ROW_INDECIES=[];
 var ButtonAdd = document.getElementById('ADD');
 var ButtonSubmit =document.getElementById('SET');
-var row =[] 
+var row =[]
 var cell;
 var cells= []
 var inputs = []
 var coll =document.createElement('td')
-  //.id = "tb" //.setAttribute("id","table"); 
+  //.id = "tb" //.setAttribute("id","table");
 
-  
+ 
  document.getElementsByTagName("body")[0].appendChild(document.createElement("table"))
  document.getElementsByTagName("table")[0].setAttribute("id","tb");
 const table= document.getElementById("tb");
@@ -178,6 +195,7 @@ cell1.setAttribute("style","text-align:center;")
 
 
 ButtonAdd.onclick = function(){
+  TASK_TYPE.push("ADD")
   ButtonSubmit.removeAttribute("disabled");
 
     row.push(document.createElement('tr'));
@@ -190,10 +208,10 @@ ButtonAdd.onclick = function(){
         switch(i)
         {
           case 0:
-            
+           
             cell.appendChild(document.createElement('select'));
             var select = cell.getElementsByTagName('select')[0];
-            
+           
             for(var z=0; z< Number(jobTypes.length); z++)
             {
               //console.log("running");
@@ -219,29 +237,29 @@ ButtonAdd.onclick = function(){
             break;
           case 3:
             cell.appendChild(document.createElement('input')).setAttribute("type","date");
-            cell.children[0].setAttribute("min",date); 
-            cell.children[0].setAttribute("required",true); 
-            cell.children[0].setAttribute("form","setRoutine") 
+            cell.children[0].setAttribute("min",date);
+            cell.children[0].setAttribute("required",true);
+            cell.children[0].setAttribute("form","setRoutine")
             break;
           default:
             break;
         }
         cell.firstElementChild.setAttribute("name","test")
         addListener(cell.firstElementChild);
-        
+       
         inputs.push(cell.firstElementChild);
 
-        //cell.appendChild(document.createElement('select')).setAttribute("type","select"); 
+        //cell.appendChild(document.createElement('select')).setAttribute("type","select");
         // ANOTHER LOOP TO ENTER OPTIONS IN SELECT
-        
+       
         // ------
         }
-    
+   
     // newRow.appendChild(document.createElement('td')).id='1';
     // newRow.appendChild(document.createElement('td')).id='2';
     // newRow.appendChild(document.createElement('td')).id='3';
-    //newRow.children[0].appendChild(document.createElement('select')).setAttribute("type","select"); 
-   //newRow.children[0].firstChild.appendChild(document.createElement('option')).value = "Water Plant" 
+    //newRow.children[0].appendChild(document.createElement('select')).setAttribute("type","select");
+   //newRow.children[0].firstChild.appendChild(document.createElement('option')).value = "Water Plant"
     //var cell =  newRow.children[0];
    // var select = document.getElementsByTagName('select')[0];
     // var options = select.firstElementChild;
@@ -251,16 +269,21 @@ ButtonAdd.onclick = function(){
     j++; // INCRIMENTING NUMBER OF ROWS
 }
 function addListener(element){
-  
+ 
   element.addEventListener("change", changeState)
 }
 
   ButtonSubmit.onclick = function() {  // SUBMIT BUTTON
-  
+    var type =0;
     var z=3;
     var tempVal;
-    while(inp<inputs.length){
-      z=3;
+    var Rowindex=0;
+    while(type<TASK_TYPE.length)
+
+{    if(TASK_TYPE[type] == "ADD")
+    {
+    //while(inp<inputs.length){
+      z=3;  // FOR EACH ROW/ LITERAL OBJECTS
     x.push(Object(  
       {  
     'jobType': inputs[inp].value,
@@ -276,14 +299,28 @@ function addListener(element){
     --z;
     }
     inp++;
+    //console.log(inp);
         ele++;
-      }
-    sendForm("/routine/ADD");
+      //}
+    //sendForm("/routine/ADD");
   //sendData('routineSUBMIT', function(response){ console.log(response)})
-
-
   ButtonSubmit.toggleAttribute("disabled");
+  }
+  else if(TASK_TYPE[type] == "MODIFY"){
+    
+    //while(Rowindex <ROW_INDECIES.length){
+    appendJSON(ROW_INDECIES[Rowindex]);
+      Rowindex++;
+   // }
+    ButtonSubmit.toggleAttribute("disabled");
+    //sendForm("/routine/ADD");
+
+  }
+  type++;
 }
+sendForm("/routine/ADD");
+  }
+
 
 function changeState()
 {
@@ -332,13 +369,13 @@ function getData(data, cb)
   Http.responseType = "text"
   Http.send();
       Http.onreadystatechange = function() {
-        
+       
           if (this.readyState == 4 && this.status == 200) {
             //document.getElementById("demo").innerHTML = this.responseText;     // This will be inside  the select loop  
             //console.log(this.status);
             //console.log(this.responseText)
             cb(this.responseText);
-  
+ 
           }
         };
    
@@ -367,13 +404,13 @@ function getData(data, cb)
 //   //Http.responseType = "text"
 
 //       // Http.onreadystatechange = function() {
-        
+       
 //       //     if (this.readyState == 4 && this.status == 200) {
 //       //       //document.getElementById("demo").innerHTML = this.responseText;     // This will be inside  the select loop  
 //       //       //console.log(this.status);
 //       //       console.log(this.responseText)
 //       //       cb(this.responseText);
-  
+ 
 //       //     }
 //       //   };
 //         //Http.send();
@@ -383,12 +420,12 @@ function getData(data, cb)
 
 function sendForm(theUrl)
 {
-  var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
+  var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance
 
 xmlhttp.open("POST", theUrl);
 xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 xmlhttp.onreadystatechange = function() {
-        
+       
           if (this.readyState == 4 && this.status == 200) {
             //document.getElementById("demo").innerHTML = this.responseText;     // This will be inside  the select loop  
             //console.log(this.status);
@@ -400,3 +437,15 @@ xmlhttp.send(JSON.stringify(x));
 
 }
 
+function appendJSON(rowI)
+{
+  
+ x[rowI].jobType = inputs[inp].value;
+ inp++;
+ x[rowI].occur = inputs[inp].value;
+ inp++;
+ x[rowI].time = inputs[inp].value;
+ inp++;
+ x[rowI].date = inputs[inp].value;
+ inp++;
+}
