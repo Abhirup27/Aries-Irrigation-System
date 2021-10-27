@@ -162,6 +162,7 @@ var h;
 var MODIFIED = false;
 var ROW_INDECIES=[];
 var ButtonAdd = document.getElementById('ADD');
+var ButtonDelete = document.getElementById('DELETEALL')
 var ButtonSubmit =document.getElementById('SET');
 var row =[]
 var cell;
@@ -320,7 +321,11 @@ function addListener(element){
 }
 sendForm("/routine/ADD");
   }
+ButtonDelete.onclick = function(){
+  x = []
+  sendForm("/routine/ADD");
 
+}
 
 function changeState()
 {
