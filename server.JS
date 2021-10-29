@@ -2,7 +2,11 @@ const express = require('express');
 const bodyParser = require('body-parser')
 const fs =require('fs');
 const app = express();
+var tool =  require('./scripts/routines');
+const { getTop } = require('./scripts/routines');
 var PORT=3000;
+ 
+
 
     app.use(express.json())
 //--REQUESTS FROM INDEX.HTML--//
@@ -31,6 +35,19 @@ app.post('/routine/ADD',function(req,res){
         else {
           // Get the file contents after the append operation
           res.send("received and stored");
+          var date = new Date()
+          const currDate =String(date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate())
+          const currTime = date.getHours() +':'+ date.getMinutes() +':'+ date.getSeconds()
+         // tool.setDate(currDate)
+          const timeLeft= tool.restartSchedule(currDate, currTime)
+          //const taskType = tool.getjobTypeTop();
+          if(timeLeft <=0)
+          {
+               //execTask(taskType); //Call functions of rpi-tasks
+          }
+          else{
+          //setTimeout(execTask(taskType), 3000);
+          }
         }
       });
     

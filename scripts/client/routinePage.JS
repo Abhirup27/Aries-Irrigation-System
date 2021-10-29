@@ -435,6 +435,7 @@ xmlhttp.onreadystatechange = function() {
             //document.getElementById("demo").innerHTML = this.responseText;     // This will be inside  the select loop  
             //console.log(this.status);
             console.log(this.responseText);
+            location.reload();
           }
         }
 xmlhttp.send(JSON.stringify(x));
