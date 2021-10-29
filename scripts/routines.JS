@@ -1,6 +1,6 @@
 //include packages if required
 const fs = require('fs')
-
+var execute = require('../scripts/rpi-tasks.JS')
 //---main program---//
 class Job{
     constructor(type, occur,time,date){
@@ -135,9 +135,16 @@ const routines = new routine();
             }
           }
           routines.sort()
-          return routines.calcNextTaskTime(time);
+         const timeLeft=  routines.calcNextTaskTime(time);
+		console.log(timeLeft)
+	if(timeLeft <0)
+	{
+		execute.execTask(routines.items[0].jobType);
 
-          
+		}
+		else{
+			setTimeout(function(){execute.execTask(routines.items[0].jobType)},timeLeft*1000)		
+		}          
     }
      )  
     },
@@ -147,6 +154,11 @@ const routines = new routine();
     },
     getjobTypeTop: function()
     {
-      return routines.peekJob();  
-    }
+      return routines.peek();  
+    },
+   calcTimeLeft: function(time)
+	{
+	timeLeft =routines.calcNextTaskTime(time);
+	return timeLeft;
+	}
   };

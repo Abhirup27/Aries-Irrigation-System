@@ -2,8 +2,9 @@ const express = require('express');
 const bodyParser = require('body-parser')
 const fs =require('fs');
 const app = express();
-var tool =  require('./scripts/routines');
-const { getTop } = require('./scripts/routines');
+var tool =  require('./scripts/routines.JS');
+//var taskRunner = require('./scripts/rpi-tasks.JS');
+const { getTop } = require('./scripts/routines.JS');
 var PORT=3000;
  
 
@@ -39,15 +40,17 @@ app.post('/routine/ADD',function(req,res){
           const currDate =String(date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate())
           const currTime = date.getHours() +':'+ date.getMinutes() +':'+ date.getSeconds()
          // tool.setDate(currDate)
-          const timeLeft= tool.restartSchedule(currDate, currTime)
-          //const taskType = tool.getjobTypeTop();
-          if(timeLeft <=0)
-          {
-               //execTask(taskType); //Call functions of rpi-tasks
-          }
-          else{
-          //setTimeout(execTask(taskType), 3000);
-          }
+          tool.restartSchedule(currDate, currTime)
+         //const timeLeft= tool.calcTimeLeft(currTime)
+	// const taskType = tool.getjobTypeTop();
+          //if(timeLeft <=0)
+         // {
+       //        taskRunner.execTask(taskType); //Call functions of rpi-tasks
+          //}
+         // else{
+	//	console.log(timeLeft)
+         //  setTimeout(function(){taskRunner.execTask(taskType);}, timeLeft);
+         // }
         }
       });
     

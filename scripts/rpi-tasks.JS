@@ -1,0 +1,26 @@
+var gpio = require('rpi-gpio').promise;
+
+module.exports = {
+execTask: function(cb)
+{
+	//console.log("RUNNING")
+	if(cb== 'Water Plants')
+	{
+		console.log("RUNNING")
+		waterPlant();
+	}
+}
+
+};
+
+function waterPlant()
+{
+	gpio.setup(16, gpio.DIR_OUT)
+    .then(() => {
+        return gpio.write(16, true)
+    })
+    .catch((err) => {
+        console.log('Error: ', err.toString())
+    })
+}
+
