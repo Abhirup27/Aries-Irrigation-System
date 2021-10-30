@@ -1,0 +1,74 @@
+var gpio = require('rpi-gpio').promise;
+var gpiop =require('rpi-gpio').promise; 
+
+
+g
+gpiop.setup(29, gpiop.DIR_IN, gpiop.EDGE_BOTH)
+
+module.exports = {
+execTask: function(cb)
+{
+	//console.log("RUNNING")
+	if(cb== 'Water Plants')
+	{
+		console.log("RUNNING")
+		waterPlant();
+	}
+       else if(cb== 'Check Moisture')
+	{ console.log("Checking Moisture") 
+	 checkMoisture();
+	}
+
+}
+
+};
+
+function waterPlant()
+{
+	var count=0;
+	gpio.setup(16, gpio.DIR_OUT)
+    .then(() => {
+        gpio.write(16, false)
+		
+    	var Interval= setInterval(function(){
+			var moisture;
+				if(count>=3)
+				{
+					clearInterval(Interval);
+					gpio.write(15,true);
+					gpio.write(16, true);
+					gpio.destroy(function() {
+					console.log('All pins unexported');
+					});
+					
+				}
+					else{
+						moisture= checkMoisture();
+						gpio.write(15, true)
+						if(moisture==false)
+						{
+							count++;
+						}
+					}
+			
+		},2500)
+	})
+    .catch((err) => {
+        console.log('Error: ', err.toString())
+    })
+}
+function checkMoisture()
+{
+	gpio.setup(15, gpio.DIR_OUT)
+	
+	gpio.write(15, false);
+	 gpiop.read(29, function(err, value) {
+        if (err) throw err;
+       // console.log('The value is ' + value);
+	   
+	return value;    
+
+});	
+
+}
+

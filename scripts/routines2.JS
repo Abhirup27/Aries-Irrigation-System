@@ -66,7 +66,7 @@ class routine{
     sort() {
       this.smallestI=1;
       
-      for(this.i=this.headIndex; this.i<this.items.length; this.i++)
+      for(this.i=0; this.i<this.items.length; this.i++)
       {
         //console.log("running")
         if(this.items[this.i].time < this.items[this.smallestI].time)
@@ -76,14 +76,14 @@ class routine{
         }
       }
 
-      this.temp = this.items[this.headIndex]
-      this.items[this.headIndex] = this.items[this.smallestI]
+      this.temp = this.items[0]
+      this.items[0] = this.items[this.smallestI]
       this.items[this.smallestI]= this.temp;
       //const timeLeftNextTask= (this.items[0].time.slice(0,2) - currtime.slice(0,2))*60*60 +(this.items[0].time.slice(3,5) - currtime.slice(3,5))*60  -currtime.slice(6,8);
       
     }
     calcNextTaskTime(currtime){
-      const timeLeftNextTask= (this.items[this.headIndex].time.slice(0,2) - currtime.slice(0,2))*60*60 +(this.items[this.headIndex].time.slice(3,5) - currtime.slice(3,5))*60  -currtime.slice(6,8);
+      const timeLeftNextTask= (this.items[0].time.slice(0,2) - currtime.slice(0,2))*60*60 +(this.items[0].time.slice(3,5) - currtime.slice(3,5))*60  -currtime.slice(6,8);
       return timeLeftNextTask;
     }
     get length() {
@@ -134,20 +134,17 @@ const routines = new routine();
               
             }
           }
-          if(routines.length ==0){return}
-          if(routines.length >1){
-            
           routines.sort()
-          }
          const timeLeft=  routines.calcNextTaskTime(time);
 		console.log(timeLeft)
 	if(timeLeft <0)
 	{
-		execute.execTask(routines.items[routines.headIndex].jobType);
+		execute.execTask(routines.items[0].jobType);
+		routines.items[0].done=0;
 
 		}
 		else{
-			setTimeout(function(){execute.execTask(routines.items[routines.headIndex].jobType)},timeLeft*1000)		
+			setTimeout(function(){execute.execTask(routines.items[0].jobType); routines.items[0].done=0;},timeLeft*1000)		
 		}          
     }
      )  
@@ -166,4 +163,3 @@ const routines = new routine();
 	return timeLeft;
 	}
   };
-
