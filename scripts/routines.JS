@@ -34,7 +34,7 @@ class Job{
 }
 }
 var jobs = []
-
+var done=1;
 class routine{
     constructor()
     {
@@ -142,14 +142,15 @@ const routines = new routine();
          const timeLeft=  routines.calcNextTaskTime(time);
 		console.log(timeLeft)
 	if(timeLeft <0)
-	{
-		execute.execTask(routines.items[routines.headIndex].jobType);
+		{
+		done=	execute.execTask(routines.items[routines.headIndex].jobType);
 
 		}
 		else{
-			setTimeout(function(){execute.execTask(routines.items[routines.headIndex].jobType)},timeLeft*1000)		
+			setTimeout(function(){done= execute.execTask(routines.items[routines.headIndex].jobType)},timeLeft*1000)		
 		}          
-    }
+   		if(done==1){console.log("Task is done!")}
+	 }
      )  
     },
 

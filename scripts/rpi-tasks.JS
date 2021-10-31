@@ -26,7 +26,8 @@ execTask: function(cb)
 function closePins(){
  gpio.destroy(function() {
  console.log('All pins unexported');
-return;
+	count =0;
+return 1;
  });
 
 }
@@ -44,7 +45,7 @@ if(count>=3)
                                         gpio.write(16, true);
                                         clearInterval(Interval);
                                        closePins();
-                                      	return
+                                      	return 1
                                         }
 
 
