@@ -58,6 +58,18 @@ app.post('/routine/ADD',function(req,res){
       });
     
 })
+app.post('/routine/DELETE', function(req,res){
+    express.json()
+    
+    fs.writeFile(__dirname +'/data/jobSchedule.JSON',JSON.stringify(req.body), (err) => {
+        if (err) {
+          console.log(err);
+        }
+        else {
+          res.send("received and stored");
+        }
+    });
+})
 app.get('/routine/routinePage.JS',function(req,res){
     res.sendFile(__dirname +"/scripts/client/routinePage.JS");
 })

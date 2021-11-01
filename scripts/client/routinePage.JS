@@ -371,7 +371,7 @@ sendForm("/routine/ADD");
   }
 ButtonDelete.onclick = function(){
   x = []
-  sendForm("/routine/ADD");
+  sendForm("/routine/DELETE");
 
 }
 
