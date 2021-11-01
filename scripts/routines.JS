@@ -1,6 +1,9 @@
 //include packages if required
 const fs = require('fs')
-var execute = require('../scripts/rpi-tasks.JS')
+//var execute = require('../scripts/rpi-tasks.JS')
+var spawn = require("child_process").spawn; 
+
+
 //---main program---//
 class Job{
     constructor(type, occur,time,date){
@@ -34,7 +37,8 @@ class Job{
 }
 }
 var jobs = []
-var done=1;
+var done=0;
+var completed=0;
 class routine{
     constructor()
     {
@@ -64,7 +68,7 @@ class routine{
       return this.items[this.headIndex].jobType;
     }
     sort() {
-      this.smallestI=1;
+      this.smallestI=this.headIndex + 1;
       
       for(this.i=this.headIndex; this.i<this.items.length; this.i++)
       {
@@ -83,7 +87,11 @@ class routine{
       
     }
     calcNextTaskTime(currtime){
-      const timeLeftNextTask= (this.items[this.headIndex].time.slice(0,2) - currtime.slice(0,2))*60*60 +(this.items[this.headIndex].time.slice(3,5) - currtime.slice(3,5))*60  -currtime.slice(6,8);
+      const timeLeftNextTask= (this.items[this.headIndex].time.slice(0,2) - currtime.slice(0,2))*60*60 +(this.items[this.headIndex].time.slice(3,5) - currtime.slice(3,5))*60   -currtime.slice(6,8);
+	//console.log(currtime.slice(0,2))
+         //console.log(currtime.slice(3,5))
+ //console.log(currtime.slice(6,8))
+
       return timeLeftNextTask;
     }
     get length() {
@@ -91,7 +99,7 @@ class routine{
     }
 
 }
-const routines = new routine();
+var routines = new routine();
 //routines.enqueue(jobs[0]);
 
 
@@ -104,8 +112,12 @@ const routines = new routine();
   }
 
   module.exports = {
-    restartSchedule: function (date ,time) {
-      jobs=[]
+    restartSchedule: function (date) {
+	
+	
+       console.log("start of restart sche")
+      	routines = new routine();
+	jobs=[]
       fs.readFile("./data/jobSchedule.JSON", 'utf-8', (err, Rdata)=>
     {
         if(err){
@@ -119,37 +131,24 @@ const routines = new routine();
         for(i=0; i<data.length; i++)
           {
             jobs.push(new Job(data[i].jobType, data[i].occur,data[i].time,data[i].date))
-            //console.log(jobs[i])
+           console.log(jobs[i])
           }
           for(i=0;i<jobs.length; i++)
           {
-           // console.log(date)
+           console.log(date)
             if(jobs[i].date == date)
             {
               //console.log(jobs[i]);
-              
+		console.log('inside if or restart Sche')              
               routines.enqueue(jobs[i])
               
               //console.log(routines.items[1]);
               
             }
           }
-          if(routines.length ==0){return}
-          if(routines.length >1){
-            
-          routines.sort()
-          }
-         const timeLeft=  routines.calcNextTaskTime(time);
-		console.log(timeLeft)
-	if(timeLeft <0)
-		{
-		done=	execute.execTask(routines.items[routines.headIndex].jobType);
-
-		}
-		else{
-			setTimeout(function(){done= execute.execTask(routines.items[routines.headIndex].jobType)},timeLeft*1000)		
-		}          
-   		if(done==1){console.log("Task is done!")}
+	  runTasks();
+                   
+   		
 	 }
      )  
     },
@@ -160,11 +159,90 @@ const routines = new routine();
     getjobTypeTop: function()
     {
       return routines.peek();  
-    },
-   calcTimeLeft: function(time)
-	{
-	timeLeft =routines.calcNextTaskTime(time);
-	return timeLeft;
-	}
+    } // ,
+  // calcTimeLeft: function(time)
+//	{
+//	timeLeft =routines.calcNextTaskTime(time);
+//	return timeLeft;
+//	}
   };
 
+function runTasks(){
+
+          if(routines.length >1){
+	console.log('before sorting')            
+          routines.sort()
+          }
+	var process
+         const timeLeft=  routines.calcNextTaskTime(getTime());
+		console.log(timeLeft)
+	if(timeLeft <0)
+		{
+		jobs[completed].done = 0;
+		//done=  execute.execTask(routines.items[routines.headIndex].jobType);
+	       process = spawn('python',["./scripts/GPIOtasks.pyw"] );
+			process.stdout.on('data', function (data) {
+  			console.log("result:" + JSON.parse(data.toString()).result);    
+			if(JSON.parse(data.toString()).result == 1)
+				{
+				console.log('printed')
+				jobs[completed].done =1;
+				completed++;
+				routines.dequeue();
+				if(routines.length!=0)
+				{
+				runTasks();
+				}
+				
+				}
+			});	
+		}
+		else{
+			//setTimeout(function(){done=  execute.execTask(routines.items[routines.headIndex].jobType)},timeLeft*1000)		
+			setTimeout(function(){ process = spawn('python',["scripts/GPIOtasks.pyw"] ); 
+			process.stdout.on('data', function (data) {
+ 			 console.log(" " + JSON.parse(data.toString()).x);    
+			 if(JSON.parse(data.toString()).result == 1)
+                                {
+                                jobs[completed].done =1;
+                                console.log('printed')
+				completed++;
+				routines.dequeue();
+				if(routines.length!=0)
+                                {
+                                runTasks();
+                                }
+	
+			
+				}
+			});
+			},timeLeft*1000)
+		
+
+			}
+
+	
+
+}
+
+function getTime(){
+	let time = new Date()
+
+	var hour = time.getHours();
+	if(String(hour).length==1)
+	{
+	hour = '0' + hour
+	}
+	var minute =time.getMinutes();
+	if(String(minute).length==1)
+	{
+	minute = '0' + minute;
+	}
+	var second = time.getSeconds();
+	if(String(second).length==1)
+	{
+	second = '0' + second;
+	}
+	const data2 = hour+':'+minute+':'+second
+	return data2;
+}

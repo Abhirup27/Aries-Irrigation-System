@@ -37,10 +37,13 @@ app.post('/routine/ADD',function(req,res){
           // Get the file contents after the append operation
           res.send("received and stored");
           var date = new Date()
-          const currDate =String(date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate())
-          const currTime = date.getHours() +':'+ date.getMinutes() +':'+ date.getSeconds()
+          //const currDate =String(date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate())
+          
+	const currDate = getDate();
+	const currTime = getTime();
          // tool.setDate(currDate)
-          tool.restartSchedule(currDate, currTime)
+		console.log("before restarting schedule")
+          tool.restartSchedule(currDate)
          //const timeLeft= tool.calcTimeLeft(currTime)
 	// const taskType = tool.getjobTypeTop();
           //if(timeLeft <=0)
@@ -98,11 +101,67 @@ app.get('/data/jobSchedule.JSON', function(req,res){
 })
 app.get('/date', function(req,res){
     let date = new Date();
-        const data =date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate(); 
-        res.send(data);  
+	
+        //var data =date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate(); 
+        
+	var Month = date.getMonth()+1;
+	var Year = date.getFullYear()
+	var dt = date.getDate()
+	if(String(Month).length==1)
+	{ Month = '0'+Month; }
+	if(String(dt).length==1){
+	dt='0'+dt;
+	}
+	const data = Year+'-'+Month+'-'+dt;
+	res.send(data);  
             
     
      })
+
+function getDate(){
+    let date = new Date();
+
+        //var data =date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+
+        var Month = date.getMonth()+1;
+        var Year = date.getFullYear()
+        var dt = date.getDate()
+        if(String(Month).length==1)
+        { Month = '0'+Month; }
+        if(String(dt).length==1){
+        dt='0'+dt;
+        }
+        const data = Year+'-'+Month+'-'+dt;
+        return data;
+
+
+     }
+
+function getTime(){
+	let time = new Date()
+
+	var hour = time.getHours();
+	if(String(hour).length==1)
+	{
+	hour = '0' + hour
+	}
+	var minute =time.getMinutes();
+	if(String(minute).length==1)
+	{
+	minute = '0' + minute;
+	}
+	var second = time.getSeconds();
+	if(String(second).length==1)
+	{
+	second = '0' + second;
+	}
+	const data2 = hour+':'+minute+':'+second
+	return data2;
+}
+
+
+
+
 // app.get('/time', function(req,res){
 //         const data =date.getHours()+':'+date.getMinutes();
 //         res.format({  

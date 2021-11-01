@@ -1,19 +1,38 @@
-var gpio = require('rpi-gpio');
-//var gpioI = require('rpi-gpio');
+var Gpio = require('onoff').Gpio; //include onoff to interact with the GPIO
+var soilActivate = new Gpio(22, 'out'); //use GPIO pin 4 as output
+var soilSense= new Gpio(5, 'in', 'both'); //use GPIO pin 17 as input, and 'both' button presses, and releases should be handled
+var motorActivate = new Gpio(23, 'out')
 
-var count=0;
-process.on('unhandledRejection', (reason, promise) => {
-  // do something
-});
+
 module.exports = {
 execTask: function(cb)
 {
+		motorActivate.writeSync(0);
+		soilActivate.writeSync(0)
+var count=0;
+
 	//console.log("RUNNING")
 	if(cb== 'Water Plants')
 	{
 		console.log("RUNNING")
+var Interval = setInterval(function(){
+var value = soilSense.readSync()
+if(value==0){
+        count++;
+        console.log(count)
+        // motorActivate.writeSync(1); //turn LED on or off depending on the button state (0 or 1)
+}
+//else{
+//  motorActivate.writeSync(0); //turn LED on or off depending on the button state (0 or 1)
+// }
+if(count>=3){
+clearInterval(Interval)
+unexportOnClose();
+return;
+}
+},2000);
 		
-		waterPlant();
+		
 	}
        else if(cb== 'Check Moisture')
 	{ console.log("Checking Moisture") 
@@ -23,55 +42,14 @@ execTask: function(cb)
 }
 
 };
-function closePins(){
- gpio.destroy(function() {
- console.log('All pins unexported');
-	count =0;
-return 1;
- });
 
-}
+function unexportOnClose() { //function to run when exiting program
+  motorActivate.writeSync(1); // Turn LED off
+//  motorActivate.unexport(); // Unexport LED GPIO to free resources
+  //soilSense.unexport(); // Unexport Button GPIO to free resources
+ soilActivate.writeSync(1);
+ //soilActivate.unexport();
+return;
+};
 
-function waterPlant(){
-
-var Interval= setInterval(function(){
-console.log(count)
-gpio.setup(15,gpio.DIR_OUT)
- gpio.setup(16,gpio.DIR_OUT)
-gpio.setup(29, gpio.DIR_IN,readInput);
-if(count>=3)
-                                {       console.log('inside if')
-                                        gpio.write(15,true);
-                                        gpio.write(16, true);
-                                        clearInterval(Interval);
-                                       closePins();
-                                      	return 1
-                                        }
-
-
-//else	{
-console.log('runs')
-function readInput(err) {
-   if (err) throw err;
-  gpio.read(29, function(err, value) {
-        if (err) throw err;
-        console.log('The value is ' + value);
-	if(value == false)
-	{
-	//gpio.write(16,true)
-	count++;
-	//console.log(count)
-	}
-    });
-	
-//	}
-
-}
-
-//gpio.destroy(function() {
-  //      console.log('All pins unexported');
-    //});
-},2000);
-
-
-}
+process.on('SIGINT', unexportOnClose);
