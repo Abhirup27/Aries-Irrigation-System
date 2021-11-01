@@ -18,8 +18,9 @@ getData('data/jobSchedule.JSON', function(restext){
 {
   console.log("running")
   row.push(document.createElement('tr'));
+  row[h].id=h;
   const newRow = table.appendChild(row[h]);
-  for(var i =0;i<5;i++){
+  for(var i =0;i<6;i++){
     newRow.appendChild(document.createElement('td')).id= `rc${row.length}${i}`;
     cell =  newRow.children[i];
     cells.push(cell);
@@ -48,6 +49,8 @@ getData('data/jobSchedule.JSON', function(restext){
               cell.firstElementChild.id = h;
               cell.firstElementChild.addEventListener('click', function(){
                 ButtonSubmit.removeAttribute("disabled");
+                this.toggleAttribute("disabled");
+                this.parentElement.parentElement.children[5].firstElementChild.toggleAttribute("disabled");
                 MODIFIED= true;
                 TASK_TYPE.push("MODIFY")
                 ROW_INDECIES.push( this.id);
@@ -58,21 +61,25 @@ getData('data/jobSchedule.JSON', function(restext){
                     switch(l){
                       case 0:
                         var Ovalue= this.parentElement.parentElement.children[l].innerHTML;//= this.parentElement.parentElement.children[l].innerHTML;
+                        this.parentElement.parentElement.children[l].innerHTML = null;
                         this.parentElement.parentElement.children[l].appendChild(new InsSelect());
                         addListener(this.parentElement.parentElement.children[l].firstElementChild)
                         break;
                       case 1:
                         var Ovalue= this.parentElement.parentElement.children[l].innerHTML;
+                        this.parentElement.parentElement.children[l].innerHTML = null;
                         this.parentElement.parentElement.children[l].appendChild(new InsSelect1())
                         addListener(this.parentElement.parentElement.children[l].firstElementChild)
                         break;
                       case 2:
                         var Ovalue= this.parentElement.parentElement.children[l].innerHTML;
+                        this.parentElement.parentElement.children[l].innerHTML = null;
                         this.parentElement.parentElement.children[l].appendChild(new InsTime());
                         addListener(this.parentElement.parentElement.children[l].firstElementChild)
                         break;
                       case 3:
                         var Ovalue= this.parentElement.parentElement.children[l].innerHTML;
+                        this.parentElement.parentElement.children[l].innerHTML = null;
                         this.parentElement.parentElement.children[l].appendChild(new InsDate());
                         addListener(this.parentElement.parentElement.children[l].firstElementChild)
                         break;
@@ -89,6 +96,19 @@ getData('data/jobSchedule.JSON', function(restext){
                }
               })
               break;
+          case 5:
+            cell.appendChild(document.createElement("input")).setAttribute("type", "button")
+            cell.firstElementChild.setAttribute('value','DELETE')
+            cell.firstElementChild.id = h;
+            cell.firstElementChild.addEventListener('click', function(){
+              ButtonSubmit.removeAttribute("disabled");
+              ROWS_DELETED.push(this.id);
+              //TASK_TYPE.push("DELETE")
+             // ROW_INDECIES.push( this.id);
+              table.removeChild(document.getElementById(this.id));
+
+
+            });
           default:
             break;
         }
@@ -151,7 +171,11 @@ getData("date",function(responseText){
 
 })
 var time ;
-getData('time', function(responseText){console.log('working!!');time=( JSON.parse(responseText))})
+getData('time', function(responseText){
+  console.log('working!!');
+time=responseText
+
+});
 
 var ele=0;
     var inp=0;
@@ -160,6 +184,7 @@ var TASK_TYPE = [];
 var j=0; // NUMBER OF ROWS
 var h;
 var MODIFIED = false;
+var ROWS_DELETED=[]
 var ROW_INDECIES=[];
 var ButtonAdd = document.getElementById('ADD');
 var ButtonDelete = document.getElementById('DELETEALL')
@@ -317,8 +342,31 @@ function addListener(element){
     //sendForm("/routine/ADD");
 
   }
+  // else if(TASK_TYPE[type] == "DELETE")
+  //   {
+  //     x.splice(Rowindex)
+  //     Rowindex++;
+  //     var RI;
+  //     for(RI=Rowindex; RI<ROW_INDECIES.length; RI++)
+  //       {
+  //         ROW_INDECIES[RI]--;
+  //       }
+  //   }
   type++;
 }
+if(ROWS_DELETED.length!=0){
+  var RI=0;
+  console.log(ROWS_DELETED.length)
+  while(RI<ROWS_DELETED.length)
+  {
+      console.log(ROWS_DELETED[RI])
+      delete x[ROWS_DELETED[RI]]
+    x.splice(ROWS_DELETED[RI],1)
+    RI++
+  }
+}
+
+
 sendForm("/routine/ADD");
   }
 ButtonDelete.onclick = function(){
@@ -329,8 +377,33 @@ ButtonDelete.onclick = function(){
 
 function changeState()
 {
+  var time = new Date();
   var element = this;
 //Detecting values of input element passed to this callback function as 'this'
+if(element.type == "time")
+{
+  getData("time",function(responseText){
+    time = responseText;
+    console.log(time)
+    console.log(element.value<time )//&& element.parentElement.parentElement.children[3].firstElementChild.value!=date )//&& element.parentElement.parentElement.children[1].firstElementChild.value == "Daily")
+    if(element.value<=time && element.parentElement.parentElement.children[3].firstElementChild.value==date){
+     var dt=  Number(element.parentElement.parentElement.children[3].firstElementChild.value.slice(8,10))+1
+      //console.log(String(dt).length)
+      if(String(dt).length ==1)
+      {
+        dt= 0+ String(dt)
+      }
+      console.log(dt)
+      element.parentElement.parentElement.children[3].firstElementChild.value = element.parentElement.parentElement.children[3].firstElementChild.value.slice(0,8) + dt; 
+     console.log(date.slice(8,10) +1 )
+    }
+    else if( element.value>time && element.parentElement.parentElement.children[3].firstElementChild.value!=date && element.parentElement.parentElement.children[1].firstElementChild.value == "Daily")
+    {
+      
+      element.parentElement.parentElement.children[3].firstElementChild.value = date
+    }
+  });
+}
 if(this.value=="Daily"){
   //console.log("Daily")
   getData("date",function(responseText){
@@ -351,7 +424,7 @@ console.log('working')
 }
 if(this.value==date && this.parentElement.parentElement.children[1].firstElementChild.value =="Once"){
   console.log("triggered")
-  element.parentElement.parentElement.children[2].firstElementChild.setAttribute("min",(time[0]+':'+time[1]))
+  element.parentElement.parentElement.children[2].firstElementChild.setAttribute("min",(time))
 }else if(this.value!=date && this.parentElement.parentElement.children[1].firstElementChild.value =="Daily"){
   console.log("triggered2")
   element.parentElement.parentElement.children[2].firstElementChild.removeAttribute("min")
@@ -359,7 +432,7 @@ if(this.value==date && this.parentElement.parentElement.children[1].firstElement
 
 if(this.value=="Once" && this.parentElement.parentElement.children[3].firstElementChild.value ==date)
 {
-  element.parentElement.parentElement.children[2].firstElementChild.setAttribute("min",(time[0]+':'+time[1]))
+  element.parentElement.parentElement.children[2].firstElementChild.setAttribute("min",(time))
 }
 if(this.value=="Daily" || this.parentElement.parentElement.children[3].firstElementChild.value !=date ){
   element.parentElement.parentElement.children[2].firstElementChild.removeAttribute("min");
@@ -380,7 +453,7 @@ function getData(data, cb)
             //console.log(this.status);
             //console.log(this.responseText)
             cb(this.responseText);
- 
+            Http.abort();
           }
         };
    

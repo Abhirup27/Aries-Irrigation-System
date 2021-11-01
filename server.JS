@@ -172,8 +172,8 @@ function getTime(){
 //      )})
 
 app.get('/time', function(req,res){
-    let date = new Date();
-        const data =[date.getHours() , date.getMinutes() , date.getSeconds()];
+   // let date = new Date();
+        const data =getTime();
     
               res.send(data);  
         
