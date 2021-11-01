@@ -87,10 +87,11 @@ class routine{
       
     }
     calcNextTaskTime(currtime){
+//       console.log(currtime.slice(0,2))
+//          console.log(currtime.slice(3,5))
+//  console.log(currtime.slice(6,8))
+console.log(this.items[this.headIndex].time)
       const timeLeftNextTask= (this.items[this.headIndex].time.slice(0,2) - currtime.slice(0,2))*60*60 +(this.items[this.headIndex].time.slice(3,5) - currtime.slice(3,5))*60   -currtime.slice(6,8);
-	//console.log(currtime.slice(0,2))
-         //console.log(currtime.slice(3,5))
- //console.log(currtime.slice(6,8))
 
       return timeLeftNextTask;
     }
