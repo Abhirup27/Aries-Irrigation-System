@@ -261,12 +261,31 @@ function updateDateJSON()
     }
     index++;
   }
+	console.log((new Date().setTime(Number(24)) - new Date().getHours())*60*60 )
+
 fs.writeFile(path.join(__dirname ,'..' , 'data', 'jobSchedule.JSON'),JSON.stringify(jobs), (err) => {
         if (err) {
           console.log(err);
         }
-	restartSchedule(getDate())
 });
+	setTimeout(function(){
+	completed=0
+	for(i=0;i<jobs.length; i++)
+          {
+           console.log(getDate())
+            if(jobs[i].date == getDate())
+            {
+              //console.log(jobs[i]);
+		console.log('inside if or restart Sche')              
+              routines.enqueue(jobs[i])
+              
+              //console.log(routines.items[1]);
+              
+            }
+          }
+	  runTasks();
+	
+  },(((new Date().setTime(Number(24)) - new Date().getHours())*60*60 - new Date().getMinutes()*60)  *1000))
 
 }
 
