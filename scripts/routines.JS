@@ -2,7 +2,7 @@
 const fs = require('fs')
 //var execute = require('../scripts/rpi-tasks.JS')
 var spawn = require("child_process").spawn; 
-
+path = require('path')
 
 //---main program---//
 class Job{
@@ -238,12 +238,36 @@ function updateDateJSON()
   while(index<jobs.length){
     if( jobs[index].occur == "Daily" )
     {
-      var date=  new Date( jobs[index].date)
-      jobs[index].date = date.setDate(jobs[index].date.setDate() +1)
-      console.log(jobs[index].date)
+	var date = new Date(jobs[index].date)
+	var nextDay = new Date(date);
+	nextDay.setDate(date.getDate() + 1);
+
+      //var date=  new Date( jobs[index].date)
+      var Year=  nextDay.getFullYear();
+	var Month = nextDay.getMonth() +1 ;
+
+	var dt = nextDay.getDay()
+
+	if(String(Month).length==1)
+     	 { Month = '0'+Month; }
+     	 if(String(dt).length==1){
+      	dt='0'+dt;
+     	 }
+
+      jobs[index].date = Year+'-'+Month+'-'+dt
+
+    // console.log(nextDay.getDate())
+	 console.log(jobs[index].date)
     }
     index++;
   }
+fs.writeFile(path.join(__dirname ,'..' , 'data', 'jobSchedule.JSON'),JSON.stringify(jobs), (err) => {
+        if (err) {
+          console.log(err);
+        }
+	restartSchedule(getDate())
+});
+
 }
 
 
