@@ -185,17 +185,20 @@ function runTasks(){
 			process.stdout.on('data', function (data) {
   			console.log("result:" + JSON.parse(data.toString()).result);    
 			if(JSON.parse(data.toString()).result == 1)
-				{
+			{
 				console.log('printed')
 				jobs[completed].done =1;
 				completed++;
 				routines.dequeue();
 				if(routines.length!=0)
 				{
-				runTasks();
+          
+          runTasks();
 				}
-				
-				}
+        else{
+          updateDateJSON();
+        }
+			}
 			});	
 		}
 		else{
@@ -213,7 +216,9 @@ function runTasks(){
                                 {
                                 runTasks();
                                 }
-	
+                                else{
+                                  updateDateJSON();
+                                }
 			
 				}
 			});
@@ -225,6 +230,22 @@ function runTasks(){
 	
 
 }
+
+function updateDateJSON()
+{
+  
+  var index=0;
+  while(index<jobs.length){
+    if( jobs[index].occur == "Daily" )
+    {
+      var date=  new Date( jobs[index].date)
+      jobs[index].date = date.setDate(jobs[index].date.setDate() +1)
+      console.log(jobs[index].date)
+    }
+    index++;
+  }
+}
+
 
 function getTime(){
 	let time = new Date()
@@ -247,3 +268,23 @@ function getTime(){
 	const data2 = hour+':'+minute+':'+second
 	return data2;
 }
+
+
+function getDate(plusD=0, plusM=0, plusY=0){
+  let date = new Date();
+
+      //var data =date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+
+      var Month = date.getMonth()+1;
+      var Year = date.getFullYear()
+      var dt = date.getDate()
+      if(String(Month).length==1)
+      { Month = '0'+Month; }
+      if(String(dt).length==1){
+      dt='0'+dt;
+      }
+      const data = Year+'-'+Month+'-'+dt;
+      return data;
+
+
+   }
