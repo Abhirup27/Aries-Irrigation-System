@@ -19,7 +19,8 @@ rpi-gpio
 pi-camera
 
 <h2>How to use</h2>
- </div>
+</div>
+
 ```
 1. Clone the repo
 git clone https://github.com/Abhirup27/Aries-Irrigation-System.git
