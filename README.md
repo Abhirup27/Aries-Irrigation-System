@@ -20,20 +20,21 @@ pi-camera
 
 <h2>How to use</h2>
 </div>
-
-```
 1. Clone the repo
+```
 git clone https://github.com/Abhirup27/Aries-Irrigation-System.git
-
+```
 2. change dir
+```
 cd Aries-Irrigation-System/
-
+```
 3.Install all the required dependencies listed above (Make sure NodeJS is install before running npm)
-npm init (enter)
+```
+npm init 
 npm install express rpi-gpio pi-camera
-
+```
 OR
-
+```
 npm install dependencies
 ```
 
