@@ -17,8 +17,9 @@ Express
 rpi-gpio
 <br>
 pi-camera
-
+ </div>
 <h2>How to use</h2>
+
 ```
 1. Clone the repo
 git clone https://github.com/Abhirup27/Aries-Irrigation-System.git
@@ -34,5 +35,5 @@ OR
 
 npm install dependencies
 ```
- </div>
+
  
