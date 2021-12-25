@@ -20,6 +20,7 @@ pi-camera
 
 <h2>How to use</h2>
 </div>
+EXECUTE THESE ON YOUR RASPBERRY PI.
 
 1. Clone the repo
 
@@ -45,5 +46,8 @@ OR
 ```
 npm install dependencies
 ```
-
- 
+4. Execute the server script
+```
+node server.js
+```
+5. Connect to your local IP on port 3000 in a broswer.
